@@ -30,51 +30,27 @@ def extract_media_info(html_content):
     # 2. Normalisation du HTML
     norm_html = html_content.replace('\\/', '/')
 
-    # 3. Tentative d'extraction depuis JSON __NEXT_DATA__
-    next_data = soup.find("script", id="__NEXT_DATA__")
-    if next_data:
-        try:
-            data = json.loads(next_data.string)
-            # Recherche récursive de liens de média dans le JSON
-            data_str = json.dumps(data)
-            
-            # Audio patterns dans le JSON
-            audio_json_matches = re.findall(r'https://[^\s"\'<>\\\]]+?\.(?:aac|mp3|wav|m4a)(?:\?[^\s"\'<>\\\]]+)?', data_str)
-            if audio_json_matches:
-                # On privilégie les liens qui contiennent "artifacts" ou "artlist"
-                for match in audio_json_matches:
-                    if "artifacts" in match or "artlist" in match:
-                        audio_url = match
-                        break
-                if not audio_url: audio_url = audio_json_matches[0]
+    # 3. Tentative d'extraction depuis JSON __NEXT_DATA__ ou scripts
+    scripts = soup.find_all("script")
+    potential_json_str = ""
+    for script in scripts:
+        if script.string and ("https://" in script.string) and (".mp3" in script.string or ".aac" in script.string or ".m3u8" in script.string):
+            potential_json_str += script.string
 
-            # Video patterns dans le JSON
-            video_json_matches = re.findall(r'https://[^\s"\'<>\\\]]+?\.(?:m3u8|mp4)(?:\?[^\s"\'<>\\\]]+)?', data_str)
-            if video_json_matches:
-                for match in video_json_matches:
-                    if "artifacts" in match or "artlist" in match:
-                        video_url = match
-                        break
-                if not video_url: video_url = video_json_matches[0]
-        except:
-            pass
+    # Recherche large de patterns de médias dans tout le code source
+    def find_best_match(patterns, text, priority_keywords=["artifacts", "artlist", "cloudfront"]):
+        matches = re.findall(patterns, text)
+        if not matches: return None
+        # Priorité aux liens officiels Artlist
+        for match in matches:
+            if any(k in match.lower() for k in priority_keywords):
+                return match
+        return matches[0]
 
-    # 4. Fallback sur regex globales si non trouvé dans le JSON
-    if not audio_url:
-        audio_matches = re.findall(r'https://[^\s"\'<>\\\]]+?\.(?:aac|mp3|wav|m4a)(?:\?[^\s"\'<>\\\]]+)?', norm_html)
-        for match in audio_matches:
-            if "artifacts" in match or "artlist" in match:
-                audio_url = match
-                break
-    
-    if not video_url:
-        video_matches = re.findall(r'https://[^\s"\'<>\\\]]+?\.(?:m3u8|mp4)(?:\?[^\s"\'<>\\\]]+)?', norm_html)
-        for match in video_matches:
-            if "artifacts" in match or "artlist" in match:
-                video_url = match
-                break
+    audio_url = find_best_match(r'https://[^\s"\'<>\\\]]+?\.(?:aac|mp3|wav|m4a)(?:\?[^\s"\'<>\\\]]+)?', norm_html + potential_json_str)
+    video_url = find_best_match(r'https://[^\s"\'<>\\\]]+?\.(?:m3u8|mp4)(?:\?[^\s"\'<>\\\]]+)?', norm_html + potential_json_str)
 
-    # 5. Fallback ultime BeautifulSoup
+    # 4. Fallback ultime BeautifulSoup
     if not audio_url:
         audio_tag = soup.find('audio')
         if audio_tag:
@@ -106,6 +82,7 @@ def fallback_yt_dlp(url, output_dir, headers=None):
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'nocheckcertificate': True,
         'extract_flat': False,
+        'ignoreerrors': True,
     }
     
     if headers:
@@ -118,8 +95,9 @@ def fallback_yt_dlp(url, output_dir, headers=None):
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
-        return True
+            # On force l'extraction même si le site semble bloqué
+            result = ydl.extract_info(url, download=True)
+            return True if result else False
     except Exception as e:
         print(f"[!] Erreur yt-dlp : {e}")
         return False
