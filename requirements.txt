@@ -3,3 +3,4 @@ beautifulsoup4
 curl-cffi
 rich
 pytest
+customtkinter
