@@ -1,15 +1,31 @@
-#!/bin/bash
-if ! command -v python3 &> /dev/null
-then
-    echo "Python n'est pas installe."
-    if command -v brew &> /dev/null
-    then
-        echo "Installation via Homebrew..."
-        brew install python
-    else
-        echo "Veuillez installer Python via https://www.python.org/downloads/"
-        exit
-    fi
-fi
-pip3 install -r requirements.txt --quiet
+# Isn't Artlist Free?
+
+Un outil simple pour extraire et télécharger des médias depuis Artlist.
+
+## 🚀 Guide de lancement (macOS / Linux)
+
+1.  **Téléchargez et décompressez** le projet.
+2.  **Lancez le programme** :
+    *   **Double-cliquez sur `run.command`**
+    *   *Ou dans un terminal :* `./run.command`
+
+*Le script vérifiera si Python est installé et installera les dépendances automatiquement.*
+
+---
+
+## 📖 Installation manuelle
+
+### 1. Prérequis (Installer Python)
+
+Ouvrez un terminal et collez la commande correspondant à votre système :
+
+*   **macOS** : `brew install python`
+*   **Linux** : `sudo apt update && sudo apt install python3`
+
+### 2. Lancement
+
+Une fois Python installé, tapez ces commandes dans le dossier du projet :
+```bash
+pip3 install -r requirements.txt
 python3 -m artlist_extractor.cli
+```
