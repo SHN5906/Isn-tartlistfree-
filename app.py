@@ -17,54 +17,117 @@ class ArtlistApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Isn't Artlist Free? - GUI")
-        self.geometry("600x500")
-        ctk.set_appearance_mode("System")
-        ctk.set_default_color_theme("blue")
+        # Fenêtre principale
+        self.title("Artlist Downloader")
+        self.geometry("650x550")
+        
+        # Thème Artlist : Sombre avec des touches de Jaune/Or
+        ctk.set_appearance_mode("Dark")
+        ctk.set_default_color_theme("blue") # On va surcharger les couleurs manuellement
+
+        # Couleurs personnalisées
+        self.yellow_artlist = "#FFD700"
+        self.bg_dark = "#1A1A1A"
+        self.text_gray = "#AAAAAA"
+
+        self.configure(fg_color=self.bg_dark)
 
         # Configuration de la grille
         self.grid_columnconfigure(0, weight=1)
         
-        # Titre
-        self.label_title = ctk.CTkLabel(self, text="Artlist Downloader", font=ctk.CTkFont(size=24, weight="bold"))
-        self.label_title.grid(row=0, column=0, padx=20, pady=(20, 5))
-
-        # Mention légale
-        self.label_disclaimer = ctk.CTkLabel(self, text="À but personnel et éducatif uniquement", font=ctk.CTkFont(size=12, slant="italic"), text_color="orange")
-        self.label_disclaimer.grid(row=1, column=0, padx=20, pady=(0, 10))
-
-        # Lien Artlist
-        self.label_url = ctk.CTkLabel(self, text="Lien Artlist (Musique ou Vidéo) :")
-        self.label_url.grid(row=2, column=0, padx=20, pady=(10, 0), sticky="w")
+        # --- HEADER ---
+        self.header_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.header_frame.grid(row=0, column=0, padx=30, pady=(30, 20), sticky="ew")
         
-        self.entry_url = ctk.CTkEntry(self, placeholder_text="Collez votre lien ici...", width=500)
-        self.entry_url.grid(row=3, column=0, padx=20, pady=(0, 20))
-
-        # Dossier de destination
-        self.label_dest = ctk.CTkLabel(self, text="Dossier de destination :")
-        self.label_dest.grid(row=4, column=0, padx=20, pady=(10, 0), sticky="w")
+        self.label_title = ctk.CTkLabel(
+            self.header_frame, 
+            text="ARTLIST", 
+            font=ctk.CTkFont(family="Helvetica", size=32, weight="bold"),
+            text_color=self.yellow_artlist
+        )
+        self.label_title.pack(side="left")
         
-        self.dest_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.dest_frame.grid(row=5, column=0, padx=20, pady=(0, 20), sticky="ew")
-        self.dest_frame.grid_columnconfigure(0, weight=1)
+        self.label_subtitle = ctk.CTkLabel(
+            self.header_frame, 
+            text=" DOWNLOADER", 
+            font=ctk.CTkFont(family="Helvetica", size=32, weight="bold"),
+            text_color="white"
+        )
+        self.label_subtitle.pack(side="left")
 
-        self.entry_dest = ctk.CTkEntry(self.dest_frame, placeholder_text="Dossier par défaut : downloads")
-        self.entry_dest.grid(row=0, column=0, padx=(0, 10), sticky="ew")
+        self.label_disclaimer = ctk.CTkLabel(
+            self, 
+            text="Usage personnel & éducatif uniquement", 
+            font=ctk.CTkFont(size=11, slant="italic"), 
+            text_color=self.text_gray
+        )
+        self.label_disclaimer.grid(row=1, column=0, padx=30, pady=(0, 20), sticky="w")
+
+        # --- INPUT SECTION ---
+        self.input_frame = ctk.CTkFrame(self, fg_color="#252525", corner_radius=15)
+        self.input_frame.grid(row=2, column=0, padx=30, pady=0, sticky="ew")
+        self.input_frame.grid_columnconfigure(0, weight=1)
+
+        self.label_url = ctk.CTkLabel(self.input_frame, text="LIEN DE LA MUSIQUE OU VIDÉO", font=ctk.CTkFont(size=10, weight="bold"), text_color=self.text_gray)
+        self.label_url.grid(row=0, column=0, padx=20, pady=(15, 5), sticky="w")
+        
+        self.entry_url = ctk.CTkEntry(
+            self.input_frame, 
+            placeholder_text="https://artlist.io/song/...", 
+            height=45, 
+            fg_color="#333333", 
+            border_color="#444444",
+            text_color="white"
+        )
+        self.entry_url.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
+
+        # --- FOLDER SECTION ---
+        self.folder_frame = ctk.CTkFrame(self, fg_color="#252525", corner_radius=15)
+        self.folder_frame.grid(row=3, column=0, padx=30, pady=20, sticky="ew")
+        self.folder_frame.grid_columnconfigure(0, weight=1)
+
+        self.label_dest = ctk.CTkLabel(self.folder_frame, text="DOSSIER DE DESTINATION", font=ctk.CTkFont(size=10, weight="bold"), text_color=self.text_gray)
+        self.label_dest.grid(row=0, column=0, padx=20, pady=(15, 5), sticky="w")
+        
+        self.entry_dest = ctk.CTkEntry(self.folder_frame, height=40, fg_color="#333333", border_color="#444444")
+        self.entry_dest.grid(row=1, column=0, padx=(20, 10), pady=(0, 20), sticky="ew")
         self.entry_dest.insert(0, os.path.join(os.getcwd(), "downloads"))
 
-        self.btn_browse = ctk.CTkButton(self.dest_frame, text="Parcourir", width=100, command=self.browse_folder)
-        self.btn_browse.grid(row=0, column=1)
+        self.btn_browse = ctk.CTkButton(
+            self.folder_frame, 
+            text="PARCOURIR", 
+            width=100, 
+            height=40,
+            fg_color="#444444",
+            hover_color="#555555",
+            command=self.browse_folder
+        )
+        self.btn_browse.grid(row=1, column=1, padx=(0, 20), pady=(0, 20))
 
-        # Bouton Télécharger
-        self.btn_download = ctk.CTkButton(self, text="Télécharger", command=self.start_download_thread, height=40, font=ctk.CTkFont(size=15, weight="bold"))
-        self.btn_download.grid(row=6, column=0, padx=20, pady=10)
+        # --- ACTION SECTION ---
+        self.btn_download = ctk.CTkButton(
+            self, 
+            text="TÉLÉCHARGER MAINTENANT", 
+            command=self.start_download_thread, 
+            height=50, 
+            font=ctk.CTkFont(size=14, weight="bold"),
+            fg_color=self.yellow_artlist,
+            text_color="black",
+            hover_color="#E6C200"
+        )
+        self.btn_download.grid(row=4, column=0, padx=30, pady=10, sticky="ew")
 
-        # Statut
-        self.status_label = ctk.CTkLabel(self, text="Prêt", text_color="gray")
-        self.status_label.grid(row=7, column=0, padx=20, pady=5)
+        # --- PROGRESS & STATUS ---
+        self.progress_bar = ctk.CTkProgressBar(self, height=4, fg_color="#333333", progress_color=self.yellow_artlist)
+        self.progress_bar.grid(row=5, column=0, padx=30, pady=(10, 0), sticky="ew")
+        self.progress_bar.set(0)
 
-        self.log_box = ctk.CTkTextbox(self, height=100, width=500)
-        self.log_box.grid(row=8, column=0, padx=20, pady=(5, 20))
+        self.status_label = ctk.CTkLabel(self, text="Prêt pour l'extraction", font=ctk.CTkFont(size=12), text_color=self.text_gray)
+        self.status_label.grid(row=6, column=0, padx=30, pady=(5, 10))
+
+        # --- LOG BOX ---
+        self.log_box = ctk.CTkTextbox(self, height=80, fg_color="#121212", border_color="#333333", border_width=1, text_color="#00FF00", font=ctk.CTkFont(family="Courier", size=11))
+        self.log_box.grid(row=7, column=0, padx=30, pady=(0, 30), sticky="ew")
         self.log_box.configure(state="disabled")
 
     def browse_folder(self):
@@ -75,11 +138,11 @@ class ArtlistApp(ctk.CTk):
 
     def log(self, message):
         self.log_box.configure(state="normal")
-        self.log_box.insert("end", message + "\n")
+        self.log_box.insert("end", f"> {message}\n")
         self.log_box.see("end")
         self.log_box.configure(state="disabled")
 
-    def update_status(self, text, color="gray"):
+    def update_status(self, text, color="#AAAAAA"):
         self.status_label.configure(text=text, text_color=color)
 
     def start_download_thread(self):
@@ -87,12 +150,13 @@ class ArtlistApp(ctk.CTk):
         dest = self.entry_dest.get().strip()
         
         if not url:
-            self.update_status("Erreur : Veuillez entrer un lien", "red")
+            self.update_status("ERREUR : URL MANQUANTE", "#FF4444")
             return
 
-        self.btn_download.configure(state="disabled")
-        self.update_status("Analyse en cours...", "blue")
-        self.log(f"[*] Début de l'analyse : {url}")
+        self.btn_download.configure(state="disabled", text="TRAITEMENT EN COURS...")
+        self.update_status("Analyse d'Artlist...", self.yellow_artlist)
+        self.progress_bar.set(0.2)
+        self.log(f"Analyse : {url}")
         
         thread = threading.Thread(target=self.run_download, args=(url, dest), daemon=True)
         thread.start()
@@ -103,7 +167,7 @@ class ArtlistApp(ctk.CTk):
             if not output_dir:
                 output_dir = os.path.join(os.getcwd(), "downloads")
 
-            self.log("[*] Connexion à Artlist...")
+            self.progress_bar.set(0.4)
             response = requests.get(url, impersonate="chrome110", timeout=15, allow_redirects=True)
             response.raise_for_status()
             html_content = response.text
@@ -114,7 +178,8 @@ class ArtlistApp(ctk.CTk):
             video_url = info["video_url"]
             title = info["title"]
             
-            self.log(f"[+] Titre trouvé : {title}")
+            self.progress_bar.set(0.6)
+            self.log(f"Fichier détecté : {title}")
             
             success = False
             headers_fallback = {"Referer": "https://artlist.io/", "Origin": "https://artlist.io"}
@@ -123,39 +188,39 @@ class ArtlistApp(ctk.CTk):
                 is_video_context = "video" in final_url.lower() or "stock-footage" in final_url.lower()
                 
                 if video_url and is_video_context:
-                    self.log("[+] Média détecté : Clip Vidéo")
                     if ".m3u8" in video_url:
                         success = fallback_yt_dlp(video_url, output_dir, headers=headers_fallback)
                     else:
                         success = download_file(video_url, output_dir, f"{title}.mp4", referer=final_url)
                 elif audio_url:
-                    self.log("[+] Média détecté : Piste Audio")
                     ext = "aac" if "aac" in audio_url or "Y29u" in audio_url else "mp3"
                     success = download_file(audio_url, output_dir, f"{title}.{ext}", referer=final_url)
                 elif video_url:
-                    self.log("[+] Média détecté : Vidéo (Fallback)")
                     if ".m3u8" in video_url:
                         success = fallback_yt_dlp(video_url, output_dir, headers=headers_fallback)
                     else:
                         success = download_file(video_url, output_dir, f"{title}.mp4", referer=final_url)
             
             if not success:
-                self.log("[!] Scraping direct insuffisant. Tentative yt-dlp...")
+                self.log("Scraping direct échoué. Passage en mode secours...")
                 success = fallback_yt_dlp(final_url, output_dir, headers=headers_fallback)
 
             if success:
-                self.update_status("Téléchargement terminé !", "green")
-                self.log(f"[SUCCESS] '{title}' téléchargé avec succès.")
+                self.progress_bar.set(1.0)
+                self.update_status("TERMINÉ AVEC SUCCÈS", "#00FF00")
+                self.log(f"Terminé : {title}")
             else:
-                self.update_status("Échec du téléchargement", "red")
-                self.log("[ERROR] Impossible de télécharger le média.")
+                self.progress_bar.set(0)
+                self.update_status("ÉCHEC DU TÉLÉCHARGEMENT", "#FF4444")
+                self.log("Erreur : Impossible de récupérer le fichier.")
 
         except Exception as e:
-            self.log(f"[ERROR] {str(e)}")
-            self.update_status("Erreur système", "red")
+            self.log(f"Erreur système : {str(e)}")
+            self.update_status("ERREUR SYSTÈME", "#FF4444")
+            self.progress_bar.set(0)
         
         finally:
-            self.btn_download.configure(state="normal")
+            self.btn_download.configure(state="normal", text="TÉLÉCHARGER MAINTENANT")
 
 if __name__ == "__main__":
     app = ArtlistApp()
