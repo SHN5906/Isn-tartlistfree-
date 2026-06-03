@@ -1,5 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
+
+# 1. Vérification de Python
 if ! command -v python3 &> /dev/null
 then
     echo "Python n'est pas installe."
@@ -12,7 +14,23 @@ then
         exit
     fi
 fi
+
+# 2. Gestion de l'environnement virtuel (VENV) pour éviter l'erreur "externally-managed-environment"
+if [ ! -d ".venv" ]; then
+    echo "Création de l'environnement virtuel (une seule fois)..."
+    python3 -m venv .venv
+fi
+
+# 3. Activation de l'environnement virtuel
+source .venv/bin/activate
+
+# 4. Installation/Mise à jour des dépendances
 echo "Vérification des dépendances..."
-pip3 install -r requirements.txt --quiet
+pip install -r requirements.txt --quiet
+
+# 5. Lancement de l'application
 echo "Lancement de l'application..."
-python3 app.py
+python app.py
+
+# 6. Désactivation (optionnel car le terminal va se fermer)
+deactivate
