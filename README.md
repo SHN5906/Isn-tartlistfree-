@@ -2,37 +2,29 @@
 
 Un outil simple pour extraire et télécharger des médias depuis Artlist.
 
-## 🚀 Guide pour les débutants (Sans savoir coder)
+## 🚀 Guide de lancement (macOS / Linux)
 
-### 1. Prérequis (À ne faire qu'une fois)
-*   **Installer Python** : Téléchargez et installez la version la plus récente sur [python.org](https://www.python.org/downloads/). 
-    *   **Important (Windows)** : Pendant l'installation, cochez bien la case **"Add Python to PATH"**.
+1.  **Téléchargez et décompressez** le projet.
+2.  **Lancez le programme** :
+    *   Double-cliquez sur `run.sh`
+    *   *Ou dans un terminal :* `./run.sh`
 
-### 2. Installation du programme
-1.  Téléchargez ce projet (bouton vert "Code" > "Download ZIP" sur GitHub) et décompressez-le.
-2.  Ouvrez un terminal (ou une invite de commande) dans le dossier du projet.
-3.  Tapez la commande suivante pour installer les outils nécessaires :
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-### 3. Utilisation
-Pour lancer le programme, tapez simplement :
-```bash
-python -m artlist_extractor.cli
-```
-Ensuite, suivez les instructions qui s'affichent à l'écran (collez votre lien Artlist et choisissez le dossier de destination).
+*Le script vérifiera si Python est installé et installera les dépendances automatiquement.*
 
 ---
 
-## 🛠 Pour les développeurs
+## 📖 Installation manuelle
 
+### 1. Prérequis
+Assurez-vous d'avoir Python 3 installé :
 ```bash
-# Installation
-pip install -r requirements.txt
-
-# Lancement
-python -m artlist_extractor.cli
+brew install python  # macOS
+sudo apt install python3  # Linux
 ```
 
-
+### 2. Lancement
+Ouvrez un terminal dans le dossier et tapez :
+```bash
+pip3 install -r requirements.txt
+python3 -m artlist_extractor.cli
+```
