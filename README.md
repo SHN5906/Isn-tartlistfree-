@@ -2,6 +2,8 @@
 
 Un outil simple pour extraire et télécharger des médias depuis Artlist avec une interface graphique moderne.
 
+> **Note importante :** Cet outil est fourni à but **personnel et éducatif uniquement**. L'utilisateur est responsable du respect des conditions d'utilisation d'Artlist.
+
 ## 🚀 Guide de lancement (macOS / Linux)
 
 1.  **Téléchargez et décompressez** le projet.

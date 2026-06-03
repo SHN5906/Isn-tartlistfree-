@@ -5,26 +5,38 @@ import re
 import json
 import base64
 
-def extract_media_urls(html_content):
+def extract_media_info(html_content):
     """
-    Analyse le contenu HTML pour trouver les URLs de média dans les scripts Next.js.
-    Gère les différents niveaux d'échappement (/, //, ///).
-    Retourne un tuple (audio_url, video_url).
+    Analyse le contenu HTML pour trouver les URLs de média et le titre.
+    Retourne un dictionnaire avec audio_url, video_url et title.
     """
     audio_url = None
     video_url = None
+    title = "extraction_artlist"
+
+    # Extraction du titre via les balises meta ou title
+    soup = BeautifulSoup(html_content, 'html.parser')
+    og_title = soup.find("meta", property="og:title")
+    if og_title:
+        title = og_title.get("content", title)
+    else:
+        title_tag = soup.find("title")
+        if title_tag:
+            title = title_tag.text
+
+    # Nettoyage du titre pour le système de fichiers
+    title = re.sub(r'[\\/*?:"<>|]', "", title).strip()
+    if " | Artlist" in title:
+        title = title.split(" | Artlist")[0]
 
     # Extraction des URLs HLS pour la vidéo (.m3u8)
-    # On cherche l'URL en ignorant les backslashes d'échappement
     video_matches = re.findall(r'https://cms-public-artifacts\.artlist\.io/([^\s"\'<>\\\]]+?\.m3u8)', html_content.replace('\\/', '/'))
     if video_matches:
         video_url = "https://cms-public-artifacts.artlist.io/" + video_matches[0]
 
-    # Extraction de l'URL audio (sitePlayableFilePath ou occurrence aac)
-    # On cherche d'abord le pattern spécifique sitePlayableFilePath qui est le plus fiable
+    # Extraction de l'URL audio
     audio_matches = re.findall(r'sitePlayableFilePath.+?(https://cms-public-artifacts\.artlist\.io/([^\s"\'<>\\\]]+))', html_content.replace('\\/', '/'))
     if not audio_matches:
-        # Fallback sur toute URL se terminant par aac
         audio_matches = re.findall(r'https://cms-public-artifacts\.artlist\.io/([^\s"\'<>\\\]]+?\.?(?:aac|mp3))', html_content.replace('\\/', '/'))
     
     if audio_matches:
@@ -35,20 +47,22 @@ def extract_media_urls(html_content):
             url = "https://cms-public-artifacts.artlist.io/" + url
         audio_url = url
     
-    # Tentative via BeautifulSoup pour le fallback (balises classiques)
-    if not audio_url or not video_url:
-        soup = BeautifulSoup(html_content, 'html.parser')
-        if not audio_url:
-            audio_tag = soup.find('audio')
-            if audio_tag:
-                audio_url = audio_tag.get('src') or (audio_tag.find('source').get('src') if audio_tag.find('source') else None)
-        
-        if not video_url:
-            video_tag = soup.find('video')
-            if video_tag:
-                video_url = video_tag.get('src') or (video_tag.find('source').get('src') if video_tag.find('source') else None)
+    # Fallback BeautifulSoup pour les URLs
+    if not audio_url:
+        audio_tag = soup.find('audio')
+        if audio_tag:
+            audio_url = audio_tag.get('src') or (audio_tag.find('source').get('src') if audio_tag.find('source') else None)
+    
+    if not video_url:
+        video_tag = soup.find('video')
+        if video_tag:
+            video_url = video_tag.get('src') or (video_tag.find('source').get('src') if video_tag.find('source') else None)
 
-    return audio_url, video_url
+    return {
+        "audio_url": audio_url,
+        "video_url": video_url,
+        "title": title
+    }
 
 def fallback_yt_dlp(url, output_dir, headers=None):
     """
