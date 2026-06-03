@@ -2,35 +2,27 @@
 
 Un outil simple pour extraire et télécharger des médias depuis Artlist.
 
-## 🚀 Guide pour les débutants (Sans savoir coder)
+## 🚀 Guide ultra-rapide (Double-clic)
 
-### 1. Prérequis (À ne faire qu'une fois)
-*   **Installer Python** : Téléchargez et installez la version la plus récente sur [python.org](https://www.python.org/downloads/). 
-    *   **Important (Windows)** : Pendant l'installation, cochez bien la case **"Add Python to PATH"**.
+1.  **Téléchargez et décompressez** le projet (bouton vert "Code" > "Download ZIP").
+2.  **Lancez le programme** :
+    *   **Sur Windows** : Double-cliquez sur `run.bat`.
+    *   **Sur macOS** : Double-cliquez sur `run.sh` (ou lancez-le via un terminal avec `./run.sh`).
 
-### 2. Installation du programme
-1.  Téléchargez ce projet (bouton vert "Code" > "Download ZIP" sur GitHub) et décompressez-le.
-2.  Ouvrez un terminal (ou une invite de commande) dans le dossier du projet.
-3.  Tapez la commande suivante pour installer les outils nécessaires :
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-### 3. Utilisation
-Pour lancer le programme, tapez simplement :
-```bash
-python -m artlist_extractor.cli
-```
-Ensuite, suivez les instructions qui s'affichent à l'écran (collez votre lien Artlist et choisissez le dossier de destination).
+*Le script vérifiera si Python est là. S'il manque, il tentera de l'installer pour vous.*
 
 ---
 
-## 🛠 Pour les développeurs
+## 📖 Guide manuel (Si le double-clic ne marche pas)
 
+### 1. Installation de Python
+*   **Windows** : `winget install -e --id Python.Python.3.12`
+*   **macOS** : `brew install python`
+*   **Manuel** : [python.org](https://www.python.org/downloads/) (Cochez bien **"Add Python to PATH"**).
+
+### 2. Lancement
+Ouvrez un terminal dans le dossier et tapez :
 ```bash
-# Installation
 pip install -r requirements.txt
-
-# Lancement
 python -m artlist_extractor.cli
 ```
