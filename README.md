@@ -1,30 +1,13 @@
 # Isn't Artlist Free?
 
-Un outil simple pour extraire et télécharger des médias depuis Artlist avec une interface graphique moderne.
+Un outil simple pour extraire et télécharger des médias depuis Artlist.
 
-> **Note importante :** Cet outil est fourni à but **personnel et éducatif uniquement**. L'utilisateur est responsable du respect des conditions d'utilisation d'Artlist.
+> **⚠️ Important :** Cet outil est fourni à but **personnel et éducatif uniquement**. L'utilisateur est responsable du respect des conditions d'utilisation d'Artlist.
 
-## 🚀 Guide de lancement (macOS / Linux)
+## 🚀 Comment lancer l'application
 
-1.  **Téléchargez et décompressez** le projet.
-2.  **Lancez l'application** :
-    *   **Sur macOS** : Faites un **clic droit** sur `run.command` et choisissez **Ouvrir**.
-    *   **Sur Linux** : Lancez `./run.command` dans un terminal.
+1. Faites un **clic droit** sur `ArtlistDownloader.app`.
+2. Choisissez **Ouvrir**.
+3. Dans la fenêtre d'alerte, cliquez sur le bouton **Ouvrir**.
 
-*Le script vérifiera si Python est installé, installera les dépendances (`customtkinter`, etc.) et lancera l'interface graphique.*
-
----
-
-## 📖 Installation manuelle
-
-### 1. Prérequis (Installer Python)
-Ouvrez un terminal et collez la commande correspondant à votre système :
-*   **macOS** : `brew install python`
-*   **Linux** : `sudo apt update && sudo apt install python3`
-
-### 2. Lancement
-Une fois Python installé, tapez ces commandes dans le dossier du projet :
-```bash
-pip3 install -r requirements.txt
-python3 app.py
-```
+*Cette procédure n'est nécessaire que la première fois pour autoriser l'application sur votre Mac.*
